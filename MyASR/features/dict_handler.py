@@ -29,9 +29,9 @@ class DictHandler:
                     for item in pickle.load(a):
                         self.add_to_dict(item)
         print('字典构建完成')
-        dict_path = os.path.join(self.root_path, 'dict', type+'_dict.pkl')
+        dict_path = os.path.join(self.root_path, 'dict')
         path_check(dict_path)
-        with open(dict_path, 'wb') as a:
+        with open(os.path.join(dict_path, type+'_dict.pkl'), 'wb') as a:
             pickle.dump(self.dict, a)
         print('字典保存完成')
 

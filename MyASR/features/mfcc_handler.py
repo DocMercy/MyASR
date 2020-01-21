@@ -16,15 +16,15 @@ class MFCCHandler:
         result = []
         for i in data:
             mfcc_data = librosa.feature.mfcc(i, sr=self.sr, n_mfcc=self.n_mfcc)
-            if len(mfcc_data) > self.mfcc_max_length:
-                self.mfcc_max_length = len(mfcc_data)
+            if mfcc_data.shape[1] > self.mfcc_max_length:
+                self.mfcc_max_length = mfcc_data.shape[1]
             result.append(mfcc_data)
         return result
 
-    def pad_mfcc(self, data):
+    def pad_mfcc(self, data, max_length):
         result = []
         for i in data:
-            diff = i.shape[1]
+            diff = max_length - i.shape[1]
             result.append(np.concatenate([i, np.zeros([self.n_mfcc, diff])], axis=1).T)
         return np.array(result)
 
@@ -47,13 +47,16 @@ class MFCCHandler:
                 count += 1
                 print(f'第{count}个处理完成')
 
+    def start_padding(self, max_length):
+        save_path1 = os.path.join(self.root_path, 'mfcc')
+        save_path2 = os.path.join(self.root_path, 'x_handled')
         count = 0
         for root, dirs, files in os.walk(save_path1):
             print(f'开始对{len(files)}个mfcc文件补零')
             for file in files:
                 with open(os.path.join(root, file), 'rb') as a:
                     mfcc_data = pickle.load(a)
-                    pad_data = self.pad_mfcc(mfcc_data)
+                    pad_data = self.pad_mfcc(mfcc_data, max_length)
                     with open(os.path.join(save_path2, f'padded_{count}.pkl'), 'wb') as b:
                         pickle.dump(pad_data, b)
                 count += 1
@@ -61,7 +64,11 @@ class MFCCHandler:
 
 
 if __name__ == '__main__':
-    m = MFCCHandler('../temp/test', 16000, 40)
-    m.start_mfcc()
-    m = MFCCHandler('../temp/train', 16000, 40)
-    m.start_mfcc()
+    m1 = MFCCHandler('../temp/test', 16000, 40)
+    m1.start_mfcc()
+    m2 = MFCCHandler('../temp/train', 16000, 40)
+    m2.start_mfcc()
+    print(f'test的最大长度{m1.mfcc_max_length}')
+    print(f'train的最大长度{m2.mfcc_max_length}')
+    m1.start_padding(max(m1.mfcc_max_length, m2.mfcc_max_length))
+    m2.start_padding(max(m1.mfcc_max_length, m2.mfcc_max_length))
