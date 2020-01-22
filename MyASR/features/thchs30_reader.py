@@ -31,7 +31,7 @@ class Thchs30Reader:
         count = 0
         print(f'开始读取{len(paths)}条音频')
         for i in range(len(paths)):
-            wave_data, sr = librosa.load(paths[i], sr=None)
+            wave_data, sr = librosa.load(paths[i], sr=16000)
             if self.sr == 0:
                 self.sr = sr
             elif self.sr != sr:
