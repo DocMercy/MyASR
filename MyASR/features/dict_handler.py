@@ -6,24 +6,23 @@ from utils import path_check
 
 
 class DictHandler:
-    def __init__(self, root_path):
+    def __init__(self, root_path, label_path):
+        self.path = label_path
         self.root_path = root_path
-        self.dict = {}
-        self.count = 1
-    
+        self.dict = {' ': 0, '<UNK>': 1}
+        self.count = 2
+
     def add_to_dict(self, data):
         """
         传入需要是str或者list
         """
         for i in data:
             if self.dict.get(i) is None:
-                self.dict[i] = str(self.count)
+                self.dict[i] = self.count
                 self.count += 1
-    
+
     def build_dict(self):
-        label_path = os.path.join(self.root_path, 'label')
-        
-        for root, dirs, files in os.walk(label_path):
+        for root, dirs, files in os.walk(self.path):
             for file in files:
                 with open(os.path.join(root, file), 'rb') as a:
                     for item in pickle.load(a):
@@ -37,7 +36,8 @@ class DictHandler:
 
 
 if __name__ == '__main__':
-    d = DictHandler('../temp/test')
+    d = DictHandler('../temp/train', '../temp/train/label_raw/chara')
     d.build_dict()
-    d = DictHandler('../temp/train')
+
+    d = DictHandler('../temp/train', '../temp/train/label_raw/phone')
     d.build_dict()
