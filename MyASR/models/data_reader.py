@@ -53,6 +53,6 @@ class DataReader:
 
 
 if __name__ == '__main__':
-    d = DataReader('../temp/train', '../temp/train/dict/dict.pkl', 'chara')
+    d = DataReader('../temp/train', '../temp/train/dict/dict.pkl', 'phone')
     print(d.dict)
     print(d.sample_x_y(64)[:5])

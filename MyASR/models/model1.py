@@ -1,13 +1,15 @@
+"""
+model1 使用的是mfcc_feature和汉字标签，仅用一个单层rnn网络(实验性)
+"""
 import tensorflow as tf
 from data_reader import DataReader
-
 
 class Model1:
     def __init__(self, train_handler):
         self.train_handler = train_handler
         self.batch_size = 16
         self.max_features = 510
-        self.n_mfcc = 40
+        self.n_mfcc = 128
         self.n_layers = 1
         self.rnn_features = 256
         self.dict_len = len(train_handler.dict) + 1
@@ -50,5 +52,5 @@ class Model1:
                     print(f'{count}个batch完成，loss={_loss}')
 
 
-m = Model1(DataReader('../temp/train', '../temp/train/dict/dict.pkl', 'chara'))
+m = Model1(DataReader('../temp/train', '../temp/train/dict/dict.pkl', 'phone'))
 m.train_start()

@@ -46,11 +46,16 @@ def start_buiding_dict():
 
 
 if __name__ == '__main__':
-    data_path = r"D:\Data\data_thchs30"
+    # 数据文件夹所在的位置
+    data_path = r"E:\Data\data_thchs30"
+    # 分块文件的大小
     file_size = 500
-    feature_type = 'mel_spec'
-    label_type = 'phone'
+    # 特征类型：mel_spec:梅尔频谱|mfcc: mfcc
+    feature_type = 'mfcc'
+    # 标签类型：chara:汉字|phone:拼音
+    label_type = 'chara'
+    
     start_reading_audio(data_path, file_size)
     start_feature(feature_type)
-    start_label_handle(label_type)
     start_buiding_dict()
+    start_label_handle(label_type)
