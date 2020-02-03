@@ -73,16 +73,16 @@ class LabelHandler:
 
 
 if __name__ == '__main__':
-    # train = LabelHandler('../temp/train', '../temp/train/dict/dict.pkl', 'chara')
-    # test = LabelHandler('../temp/test', '../temp/train/dict/dict.pkl', 'chara')
-    # train.start_handling()
-    # test.start_handling()
-    # train.start_padding(max(train.max_len, test.max_len))
-    # test.start_padding(max(train.max_len, test.max_len))
-
-    train = LabelHandler('../temp/train', '../temp/train/dict/dict.pkl', 'phone')
-    test = LabelHandler('../temp/test', '../temp/train/dict/dict.pkl', 'phone')
+    train = LabelHandler('../temp/train', '../temp/train/dict/dict.pkl', 'chara')
+    test = LabelHandler('../temp/test', '../temp/train/dict/dict.pkl', 'chara')
     train.start_handling()
     test.start_handling()
     train.start_padding(max(train.max_len, test.max_len))
     test.start_padding(max(train.max_len, test.max_len))
+
+    # train = LabelHandler('../temp/train', '../temp/train/dict/dict.pkl', 'phone')
+    # test = LabelHandler('../temp/test', '../temp/train/dict/dict.pkl', 'phone')
+    # train.start_handling()
+    # test.start_handling()
+    # train.start_padding(max(train.max_len, test.max_len))
+    # test.start_padding(max(train.max_len, test.max_len))

@@ -5,17 +5,15 @@ from features.label_handler import *
 from features.dict_handler import *
 
 
-def start_reading_audio(data_path, file_size):
+def start_reading_audio(data_path, file_size,label_type):
     x_train = Thchs30AudioReader(os.path.join(data_path, 'train'), 'temp/train', 16000)
     x_train.read_audio(file_size)
     x_test = Thchs30AudioReader(os.path.join(data_path, 'test'), 'temp/test', 16000)
     x_test.read_audio(file_size)
     y_train = Thchs30LabelReader(os.path.join(data_path, 'train'), 'temp/train', os.path.join(data_path, 'data'))
-    y_train.read_label('phone', file_size)
-    y_train.read_label('chara', file_size)
+    y_train.read_label(label_type, file_size)
     y_test = Thchs30LabelReader(os.path.join(data_path, 'test'), 'temp/test', os.path.join(data_path, 'data'))
-    y_test.read_label('phone', file_size)
-    y_test.read_label('chara', file_size)
+    y_test.read_label(label_type, file_size)
 
 
 def start_feature(feature_type):
@@ -38,10 +36,8 @@ def start_label_handle(label_type):
     test.start_padding(max(train.max_len, test.max_len))
 
 
-def start_buiding_dict():
-    d = DictHandler('temp/train', 'temp/train/label_raw/chara')
-    d.build_dict()
-    d = DictHandler('temp/train', 'temp/train/label_raw/phone')
+def start_buiding_dict(label_type):
+    d = DictHandler('temp/train', 'temp/train/label_raw/'+label_type)
     d.build_dict()
 
 
@@ -53,9 +49,9 @@ if __name__ == '__main__':
     # 特征类型：mel_spec:梅尔频谱|mfcc: mfcc
     feature_type = 'mfcc'
     # 标签类型：chara:汉字|phone:拼音
-    label_type = 'chara'
+    label_type = 'phone'
     
-    start_reading_audio(data_path, file_size)
+    start_reading_audio(data_path, file_size,label_type)
     start_feature(feature_type)
-    start_buiding_dict()
+    start_buiding_dict(label_type)
     start_label_handle(label_type)

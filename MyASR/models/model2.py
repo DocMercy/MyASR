@@ -7,12 +7,13 @@ from data_reader import DataReader
 
 
 class Model2:
-    def __init__(self, train_handler):
+    def __init__(self, train_handler, test_handler):
         self.train_handler = train_handler
+        self.test_handler = test_handler
         self.batch_size = 16
         self.max_features = 510
         self.n_mfcc = 40
-        self.learning_rate = 1e-4
+        self.learning_rate = 3e-5
         self.dict_size = len(train_handler.dict) + 1
     
     def residual_block(self, input_tensor):
@@ -52,6 +53,8 @@ class Model2:
         
         op = tf.train.AdamOptimizer(self.learning_rate)
         train_step = op.minimize(loss)
+        reshaped_logits = tf.reshape(logits, [self.max_features, self.batch_size, self.dict_size])
+        decoded_data = tf.nn.ctc_beam_search_decoder_v2(reshaped_logits, logits_len, beam_width=5)
         
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
@@ -65,14 +68,21 @@ class Model2:
                 })
                 count += 1
                 if count % 5 == 0 and count != 0:
-                    _loss = sess.run(loss, feed_dict={
+                    _loss, _decoded = sess.run((loss, decoded_data), feed_dict={
                         x: x_this_batch,
                         y: y_this_batch,
                         label_length: label_length_this_batch
                     })
+                    _decoded_data, _decoded_prob = _decoded
                     print(f'{count}个batch完成，loss={_loss}')
+                    print(f'decode string: {"".join(train_handler.decode(_decoded_data[0].values))}')
+    
+    def decode_batch(self, decoded, probs):
+        pass
 
 
 if __name__ == '__main__':
-    m = Model2(DataReader('../temp/train', '../temp/train/dict/dict.pkl', 'phone'))
+    train_handler = DataReader('../temp/train', '../temp/train/dict/dict.pkl', 'phone')
+    test_handler = DataReader('../temp/test', '../temp/train/dict/dict.pkl', 'phone')
+    m = Model2(train_handler, test_handler)
     m.start_training()

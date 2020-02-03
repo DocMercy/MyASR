@@ -78,14 +78,14 @@ class Thchs30LabelReader:
 
 
 if __name__ == '__main__':
-    root_path = r"D:\Data\data_thchs30"
+    root_path = r"E:\Data\data_thchs30"
     file_size = 500
-    x_train = Thchs30AudioReader(os.path.join(root_path, 'train'), '../temp/train', 16000)
-    x_train.read_audio(file_size)
-    x_test = Thchs30AudioReader(os.path.join(root_path, 'test'), '../temp/test', 16000)
-    x_test.read_audio(file_size)
+    # x_train = Thchs30AudioReader(os.path.join(root_path, 'train'), '../temp/train', 16000)
+    # x_train.read_audio(file_size)
+    # x_test = Thchs30AudioReader(os.path.join(root_path, 'test'), '../temp/test', 16000)
+    # x_test.read_audio(file_size)
     y_train = Thchs30LabelReader(os.path.join(root_path, 'train'), '../temp/train', os.path.join(root_path, 'data'))
-    y_train.read_label('phone', file_size)
+    # y_train.read_label('phone', file_size)
     y_train.read_label('chara', file_size)
     y_test = Thchs30LabelReader(os.path.join(root_path, 'test'), '../temp/test', os.path.join(root_path, 'data'))
     y_test.read_label('phone', file_size)

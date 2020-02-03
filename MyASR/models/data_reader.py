@@ -9,7 +9,7 @@ class DataReader:
         self.label_type = label_type
         self.x_paths, self.y_paths, self.y_lens = self.get_x_y_paths()
         self.dict, self.reverse_dict = self.read_dict(dict_path)
-
+    
     @staticmethod
     def read_dict(dict_path):
         with open(dict_path, 'rb') as a:
@@ -18,7 +18,7 @@ class DataReader:
         for i, j in dict.items():
             reverse_dict[j] = i
         return dict, reverse_dict
-
+    
     def get_x_y_paths(self):
         x_result = []
         y_result = []
@@ -35,7 +35,7 @@ class DataReader:
                 else:
                     y_result.append(os.path.join(root, file))
         return x_result, y_result, y_len
-
+    
     def sample_x_y(self, batch_size):
         rand_file_num = np.random.randint(len(self.x_paths))
         with open(self.x_paths[rand_file_num], 'rb') as a:
@@ -44,12 +44,22 @@ class DataReader:
             y_data = pickle.load(b)
         with open(self.y_lens[rand_file_num], 'rb') as b:
             y_len = pickle.load(b)
-
+        
         rand_batch_num = np.random.randint(0, len(x_data) - batch_size)
         x_this_batch = x_data[rand_batch_num:rand_batch_num + batch_size]
         y_this_batch = y_data[rand_batch_num:rand_batch_num + batch_size]
         label_lengths = y_len[rand_batch_num:rand_batch_num + batch_size]
         return x_this_batch, y_this_batch, label_lengths
+    
+    def decode(self, sentence_labels):
+        result = []
+        for i in sentence_labels:
+            word = self.reverse_dict.get(i)
+            if word is None:
+                result.append('')
+            else:
+                result.append(word)
+        return result
 
 
 if __name__ == '__main__':
