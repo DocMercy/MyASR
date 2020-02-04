@@ -57,7 +57,9 @@ class Model2:
         decoded_data = tf.nn.ctc_beam_search_decoder_v2(reshaped_logits, logits_len, beam_width=5)
         
         with tf.Session() as sess:
-            sess.run(tf.global_variables_initializer())
+            saver = tf.train.Saver(tf.global_variables())
+            saver.restore(sess, '../Model/model_2/')
+            # sess.run(tf.global_variables_initializer())
             count = 0
             while True:
                 x_this_batch, y_this_batch, label_length_this_batch = self.train_handler.sample_x_y(self.batch_size)
@@ -76,6 +78,7 @@ class Model2:
                     _decoded_data, _decoded_prob = _decoded
                     print(f'{count}个batch完成，loss={_loss}')
                     print(f'decode string: {"".join(train_handler.decode(_decoded_data[0].values))}')
+                    saver.save(sess, '../Model/model_2/')
     
     def decode_batch(self, decoded, probs):
         pass

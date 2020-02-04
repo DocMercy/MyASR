@@ -9,8 +9,8 @@ class Model1:
         self.train_handler = train_handler
         self.batch_size = 16
         self.max_features = 510
-        self.n_mfcc = 128
-        self.n_layers = 1
+        self.n_mfcc = 40
+        self.n_layers = 2
         self.rnn_features = 256
         self.dict_len = len(train_handler.dict) + 1
         self.learning_rate = 1e-5
