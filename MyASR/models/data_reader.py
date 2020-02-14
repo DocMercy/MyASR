@@ -9,7 +9,7 @@ class DataReader:
         self.label_type = label_type
         self.x_paths, self.y_paths, self.y_lens = self.get_x_y_paths()
         self.dict, self.reverse_dict = self.read_dict(dict_path)
-    
+
     @staticmethod
     def read_dict(dict_path):
         with open(dict_path, 'rb') as a:
@@ -18,7 +18,7 @@ class DataReader:
         for i, j in dict.items():
             reverse_dict[j] = i
         return dict, reverse_dict
-    
+
     def get_x_y_paths(self):
         x_result = []
         y_result = []
@@ -35,7 +35,7 @@ class DataReader:
                 else:
                     y_result.append(os.path.join(root, file))
         return x_result, y_result, y_len
-    
+
     def sample_x_y(self, batch_size):
         rand_file_num = np.random.randint(len(self.x_paths))
         with open(self.x_paths[rand_file_num], 'rb') as a:
@@ -44,22 +44,36 @@ class DataReader:
             y_data = pickle.load(b)
         with open(self.y_lens[rand_file_num], 'rb') as b:
             y_len = pickle.load(b)
-        
+
         rand_batch_num = np.random.randint(0, len(x_data) - batch_size)
         x_this_batch = x_data[rand_batch_num:rand_batch_num + batch_size]
         y_this_batch = y_data[rand_batch_num:rand_batch_num + batch_size]
         label_lengths = y_len[rand_batch_num:rand_batch_num + batch_size]
         return x_this_batch, y_this_batch, label_lengths
-    
-    def decode(self, sentence_labels):
+
+    def decode(self, decoded_data):
+        result_ids = np.zeros(decoded_data.dense_shape)
+        for i in range(len(decoded_data.indices)):
+            x, y = decoded_data.indices[i]
+            result_ids[x][y] = decoded_data.values[i]
+
         result = []
-        for i in sentence_labels:
-            word = self.reverse_dict.get(i)
-            if word is None:
-                result.append('')
-            else:
-                result.append(word)
-        return result
+        for i in result_ids:
+            sentence = []
+            for j in i:
+                word = self.reverse_dict.get(j)
+                if word is None:
+                    sentence.append('')
+                else:
+                    sentence.append(word)
+            result.append(" ".join(sentence))
+
+        result_ids_list = result_ids.tolist()
+        for i in result_ids_list:
+            while 0 in i:
+                i.remove(0)
+
+        return result_ids_list, result
 
 
 if __name__ == '__main__':

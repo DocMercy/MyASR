@@ -43,7 +43,7 @@ def start_buiding_dict(label_type):
 
 if __name__ == '__main__':
     # 数据文件夹所在的位置
-    data_path = r"E:\Data\data_thchs30"
+    data_path = r"D:\Data\data_thchs30"
     # 分块文件的大小
     file_size = 500
     # 特征类型：mel_spec:梅尔频谱|mfcc: mfcc
